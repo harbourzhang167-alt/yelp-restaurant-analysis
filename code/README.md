@@ -17,6 +17,10 @@ will raise `ModuleNotFoundError` in this environment.
 
 ## Reading order
 
+All 35 analysis scripts are here, including the figure renderers, because "the
+figures are hand-drawn with Pillow" is a claim this repository makes and the code is
+the evidence. The table below lists the ones worth reading first.
+
 | File | What it does |
 |---|---|
 | `01_profile.py` | Profiles all 17 tables, audits data quality, documents seven traps |
