@@ -1,0 +1,66 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # 1) The most important check for a public repo: no credential material.
+  #    Deliberately not a plain `git grep private_key` -- that string appears in
+  #    this file and in the checker itself, so a naive grep reports false
+  #    positives and gets ignored. The script matches real key signatures instead.
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Scan tracked files for credential material
+        run: python scripts/check_no_secrets.py
+
+  # 2) The documents are the deliverable, so a dead internal link is a real defect.
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Every relative link and figure must resolve
+        run: python scripts/check_links.py
+      - name: No tracked file may exceed 50 MB
+        run: |
+          set -uo pipefail
+          bad=0
+          while IFS= read -r -d '' f; do
+            sz=$(stat -c %s "$f" 2>/dev/null || echo 0)
+            if [ "$sz" -gt 52428800 ]; then
+              echo "::error file=$f::exceeds 50 MB ($((sz/1024/1024)) MB)"
+              bad=1
+            fi
+          done < <(git ls-files -z)
+          if [ "$bad" -ne 0 ]; then
+            exit 1
+          fi
+          echo "no tracked file exceeds 50 MB"
+
+  # 3) The code is included as evidence of method, so it should at least compile.
+  #    No dependencies are installed: byte-compiling needs none, which keeps this
+  #    job fast and avoids pinning versions for scripts that are read, not run.
+  syntax:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Byte-compile the analysis scripts
+        run: python -m compileall -q code scripts

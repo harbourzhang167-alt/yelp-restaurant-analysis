@@ -1,5 +1,7 @@
 # What Keeps a Restaurant Alive — and What Makes It Profitable?
 
+[![checks](https://github.com/harbourzhang167-alt/yelp-restaurant-analysis/actions/workflows/checks.yml/badge.svg)](https://github.com/harbourzhang167-alt/yelp-restaurant-analysis/actions/workflows/checks.yml)
+
 **A survival + traffic + profitability analysis of 52,286 US restaurants.**
 Yelp academic dataset · 17 tables · 42.4 million rows · Python (no scipy/statsmodels)
 
@@ -137,6 +139,23 @@ prohibits redistribution. The repository contains aggregate results, figures and
 the analysis code only. Per-business tables are deliberately excluded.
 
 Map imagery © OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/).
+
+## Repository checks
+
+Three CI jobs run on every push (see [`.github/workflows/checks.yml`](.github/workflows/checks.yml)):
+
+| Job | What it enforces |
+|---|---|
+| `secret-scan` | no credential material in tracked files — it matches key *signatures*, not the word "key", so the check does not flag its own source |
+| `integrity` | every relative link and embedded figure resolves; no tracked file exceeds 50 MB |
+| `syntax` | all analysis scripts byte-compile on Python 3.10 and 3.12 |
+
+Both checkers also run locally:
+
+```bash
+python scripts/check_no_secrets.py
+python scripts/check_links.py
+```
 
 ## Licence
 
