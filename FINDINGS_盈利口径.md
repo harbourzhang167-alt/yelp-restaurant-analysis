@@ -1,5 +1,8 @@
 # 成功标准之争：活得长，还是累计盈利过关？
 
+
+> 中文版 · **English edition: [FINDINGS_PROFIT_EN.md](FINDINGS_PROFIT_EN.md)**（同一份分析、同一组数字）
+
 > 上游：[FINDINGS.md](FINDINGS.md)（因变量＝存活）· [FINDINGS_客流分析.md](FINDINGS_客流分析.md)（因变量＝客流）
 > 复现：`analysis/13_profit_scenarios.py` → `analysis/14_profit_charts.py`
 

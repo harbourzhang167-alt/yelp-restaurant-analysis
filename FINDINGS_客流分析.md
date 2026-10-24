@@ -1,5 +1,8 @@
 # 换一个因变量：把「客流量」作为结果变量
 
+
+> 中文版 · **English edition: [FINDINGS_TRAFFIC_EN.md](FINDINGS_TRAFFIC_EN.md)**（同一份分析、同一组数字）
+
 > 前置文档：[FINDINGS.md](FINDINGS.md)（以「是否存活」为因变量的主分析）
 > 复现：`analysis/11_traffic.py` → `analysis/12_traffic_charts.py`
 
