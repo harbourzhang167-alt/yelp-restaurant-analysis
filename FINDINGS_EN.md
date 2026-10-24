@@ -483,10 +483,13 @@ Categories differ sharply in when check-ins happen: late night (22:00–03:59) a
 
 ## Next steps
 
-1. **Time-series / survival analysis**: use `final_warning_data` (monthly) and
-   `restaurant_quarterly_trajectory` (quarterly) to build a real hazard model, with "rate of rating
-   decline" as an early-warning factor — this would bypass the current "unknown closure date"
-   limitation.
+1. ~~**Time-series / survival analysis**~~ → **done**, see
+   [FINDINGS_HAZARD_EN.md](FINDINGS_HAZARD_EN.md). A discrete-time hazard model was fitted on the
+   quarterly trajectories (986,088 person-period rows, 17,235 events). It **refuted the guess made
+   here**: the rate of rating decline has **no** early-warning value (HR 0.997, 95% CI
+   [0.980, 1.017]); the rating **level** (HR 0.809) and the review-volume trend (HR 0.777) do.
+   Separately, `final_warning_data` turned out to be at review-event grain rather than store ×
+   month (4.72M rows for only 1.83M unique pairs), so it is unusable for this purpose.
 2. **Text signals**: negative-review length rises monotonically (5 stars 445 characters → 2 stars
    694), so unsupervised topics and computable negative-review flags could feed the warning system.
 3. **Social graph**: `yelp_users_raw` contains `friends`, enabling network-degree and community

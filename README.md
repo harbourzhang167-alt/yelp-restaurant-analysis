@@ -58,6 +58,30 @@ Under an explicitly parameterised profit model, the *lowest*-density decile show
 even though the low-density decile has the **lowest** closure rate. Long-lived,
 low-traffic restaurants can be quietly losing money for years.
 
+**4. A sliding rating is not an early warning — we tested it and it failed.**
+
+The two analyses above can only compare stores; they cannot say *when* anything
+happens. So the quarterly trajectory table was used to build a **discrete-time hazard
+model** over 986,088 store-quarters (17,235 events), with every predictor lagged and
+`is_open` never used as an input.
+
+| Variable (+1 SD) | Hazard ratio | Verdict |
+|---|---:|---|
+| Offers delivery | **0.606** [0.599, 0.615] | strongest protective factor |
+| Review-volume trend | 0.777 [0.767, 0.790] | declining volume does predict exit |
+| Recent mean rating (level) | 0.809 [0.795, 0.824] | the level matters |
+| **Rating trend (direction)** | **0.997 [0.980, 1.017]** | **no effect — the hypothesis is refuted** |
+| 1 km competitors (log) | 1.176 [1.158, 1.194] | density raises risk |
+
+The rating-trend coefficient sits on top of 1, and its three survival curves overlap
+exactly. **What matters is the absolute level of the rating, not whether it is
+falling.** Delivery's effect also replicates here (HR 0.606), under a completely
+different model, which is the strongest evidence in the repository.
+
+<p align="center">
+  <img src="charts/fig31_hazard_survival_curves.png" width="820">
+</p>
+
 <p align="center">
   <img src="charts/fig27_survival_vs_profit.png" width="700">
 </p>
@@ -72,6 +96,9 @@ low-traffic restaurants can be quietly losing money for years.
 - **Right-censoring corrected.** An early finding ("dense locations die younger") turned
   out to be a censoring artefact; restricted to closed stores the lifespan is flat
   across density (43–45 months).
+- **A hypothesis of my own, refuted.** The report listed "rating decline" as a likely
+  early-warning signal; the hazard model tested it and found HR 0.997. It is written up
+  as a negative result rather than quietly dropped.
 - **Everything hand-rolled.** Spearman via rank transforms, logistic regression via
   IRLS in numpy, charts drawn with Pillow — no scipy, statsmodels or matplotlib.
 - **Assumptions made visible.** Where the data is silent (rent, ticket price, margin),
@@ -118,6 +145,7 @@ Each analysis is available in **English and Chinese** — same analysis, same nu
 | Survival analysis (main) | [FINDINGS_EN.md](FINDINGS_EN.md) | [FINDINGS.md](FINDINGS.md) |
 | Traffic as the dependent variable | [FINDINGS_TRAFFIC_EN.md](FINDINGS_TRAFFIC_EN.md) | [FINDINGS_客流分析.md](FINDINGS_客流分析.md) |
 | Survival vs cumulative profit | [FINDINGS_PROFIT_EN.md](FINDINGS_PROFIT_EN.md) | [FINDINGS_盈利口径.md](FINDINGS_盈利口径.md) |
+| **Timing: discrete-time hazard** | [FINDINGS_HAZARD_EN.md](FINDINGS_HAZARD_EN.md) | [FINDINGS_HAZARD.md](FINDINGS_HAZARD.md) |
 | Data profiling and audit | [01_profile.md](01_profile.md) — English summary at the top | same file, full detail |
 | 15-page explanatory report | — | [report-zh.docx](report-zh.docx), 11 figures |
 
