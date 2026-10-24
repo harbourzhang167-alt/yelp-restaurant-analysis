@@ -1,9 +1,66 @@
 # NROA 餐厅留存分析 · 数据理解报告
 
+> 中文版 · **English summary below** (the full detailed report is Chinese)
+
+
 生成时间：2026-09-30 22:13
 
 本报告覆盖 `bdao_group4` 数据集全部 14 张已导出表，目标是回答：
 **哪些变量真的能区分「活得好的餐厅」和「倒掉的餐厅」，哪些看起来能用其实是陷阱。**
+
+## English summary — data profiling and quality audit
+
+**Scope.** All 14 exported tables of the `bdao_group4` dataset were profiled to answer one question:
+*which variables genuinely separate restaurants that thrive from those that close, and which only
+look usable?*
+
+**Table inventory** (grain differs by table — this matters for every later join):
+
+| Table | Grain | Rows | Contents |
+|---|---|---:|---|
+| `cleaned_restaurants` | store | 52,286 | profile, 13 venue attributes, price tier, geography |
+| `yelp_restaurants` | store | 52,286 | as above plus opening hours and ambience detail |
+| `business_checkin_summary` | store | 51,318 | total check-ins, category |
+| `final_performance_master` | review | 4,724,683 | review-level rows with rolling averages |
+| `cleaned_reviews` | review | 4,724,683 | review text, useful/funny/cool, dates |
+| `final_warning_data` | store × month | 4,724,683 | monthly review counts and rolling averages |
+| `restaurant_quarterly_trajectory` | store × quarter | 986,088 | quarterly counts and averages |
+| `checkin_restaurant_hourly` | store × weekday × hour | 1,995,584 | check-in time distribution |
+| `cleaned_checkin_expanded` | check-in event | 8,515,582 | per-store check-in timestamps |
+| `yelp_tips` | tip | 649,181 | short reviews with compliment counts |
+| `yelp_users` | user | 1,446,025 | review count, fans, elite, average stars |
+
+**Missingness is structured, not random.** Several attribute columns are dominated by "Unknown":
+`by_appointment_only` 93.6%, `alcohol` 62.4%, `caters` 34.0%, `noise_level` 33.4%,
+`bike_parking` 32.2%, `wifi` 27.9%, `good_for_kids` 21.7%, `outdoor_seating` 19.9%. Crucially the
+Unknown group has a **higher** survival rate than the average, so filling Unknown with False or
+dropping those rows would bias every downstream result. Unknown is kept as its own category.
+
+**Six data traps found before any modelling** — each one would have produced a confident but wrong
+conclusion:
+
+| Trap | Evidence | Handling |
+|---|---|---|
+| **Circularity** — last review date ≈ closure date | closed stores' last reviews cluster in 2015–2021, open stores in 2021–2022; `span_days`~`is_open` Spearman **+0.352** | `last_review_date` and `review_span` excluded entirely |
+| **Snapshot distortion** — `is_open` is stamped on every historical review | grouping by year yields an "industry improving" trend from 64% (2005) to 99.7% (2022) | no year-level aggregation of `is_open`; store-level cross-section only |
+| **Inconsistent count sources** | `business_review_count` matches the actual review count for only 38.8% of stores (median gap −1, max −128) | every ratio uses one single source |
+| **Unknown is signal, not noise** | `noise_level` Unknown 73.3% open vs average 66.4%; `alcohol` Unknown 70.4% vs full_bar 60.5% | Unknown retained as a category |
+| **Uniform time-zone offset in check-in hours** | coffee shops show very low 6–10 am check-ins in *every* zone (East Coast 594–3,481 vs peak 37,771) | hour used only for relative category comparison |
+| **Truncation** | minimum `business_review_count` is 5 | conclusions scoped to stores with ≥5 reviews |
+
+**Correlation must be read both ways.** Pearson and Spearman disagree substantially because the
+relationships are non-monotonic and heavy-tailed; for example review count vs stars is +0.195
+Pearson but +0.296 Spearman. Reporting only one would misstate the strength.
+
+**Direction screen.** Six candidate directions were assessed on evidence strength, main threat and
+actionability; **retention drivers (A), accessibility over reputation (B) and real spatial density
+(C)** were chosen as the main line, with operating rhythm (D) as a supporting section and
+user/social-graph and review-text analyses (E, F) as optional extensions.
+
+**What this data can and cannot answer**: it can reliably identify **correlates of survival**; it
+cannot establish causality, and it cannot pin down actual closure dates.
+
+---
 
 ## 1. 表清单与粒度
 

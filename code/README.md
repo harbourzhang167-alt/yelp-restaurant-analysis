@@ -1,4 +1,3 @@
-# Analysis code
 
 These are the scripts behind the figures and numbers. They are included so the
 methods can be inspected directly — every statistic here is hand-written rather

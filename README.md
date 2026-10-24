@@ -111,26 +111,54 @@ The 29 figures and the full write-up are in this repository. Statistical work:
 
 ## Documents
 
-| File | Contents |
-|---|---|
-| [FINDINGS.md](FINDINGS.md) | Main analysis (survival) — six documented data traps, 12 limitations |
-| [FINDINGS_客流分析.md](FINDINGS_客流分析.md) | Traffic as the dependent variable |
-| [FINDINGS_盈利口径.md](FINDINGS_盈利口径.md) | Survival vs profit, break-even model, joint sensitivity |
-| [01_profile.md](01_profile.md) | Data profiling and quality audit |
-| [report-zh.docx](report-zh.docx) | 15-page explanatory report (Chinese), 11 figures |
+Each analysis is available in **English and Chinese** — same analysis, same numbers.
 
-## Honest framing
+| Topic | English | Chinese |
+|---|---|---|
+| Survival analysis (main) | [FINDINGS_EN.md](FINDINGS_EN.md) | [FINDINGS.md](FINDINGS.md) |
+| Traffic as the dependent variable | [FINDINGS_TRAFFIC_EN.md](FINDINGS_TRAFFIC_EN.md) | [FINDINGS_客流分析.md](FINDINGS_客流分析.md) |
+| Survival vs cumulative profit | [FINDINGS_PROFIT_EN.md](FINDINGS_PROFIT_EN.md) | [FINDINGS_盈利口径.md](FINDINGS_盈利口径.md) |
+| Data profiling and audit | [01_profile.md](01_profile.md) — English summary at the top | same file, full detail |
+| 15-page explanatory report | — | [report-zh.docx](report-zh.docx), 11 figures |
+
+## Team and my contribution
 
 This was a **four-person academic group project** (BDAO, University of Auckland).
-<!-- TODO: replace the line below with your actual contribution -->
-*My contribution: [e.g. designed the two-dependent-variable framing, built the
-survival and traffic models, and wrote the report].*
+
+**My contribution covered three areas:**
+
+**1. Data preparation.** Cleaned and validated the 17 exported tables, defined the
+per-business analysis unit, and resolved the data-quality problems that would
+otherwise have invalidated the results silently — circular variables, a snapshot
+field repeated across historical rows, right-censored lifespans, and geography that
+covers only a handful of states.
+
+**2. Analytical direction.** Decided what the analysis should actually answer and in
+what order: which stakeholder the findings serve, which of four candidate directions
+to pursue, which dependent variable to model first, and when a result had to be
+retracted. Two concrete examples: excluding `last_review_date` after showing it is
+mechanically circular with closure, and correcting an early "dense locations die
+younger" finding that turned out to be a right-censoring artefact rather than a real
+effect.
+
+**3. Visualisation and communication.** Designed and built all 29 figures and the
+15-page report, including the OpenStreetMap basemap pipeline (tile stitching in Web
+Mercator, verified against projected coordinates) and the methodology diagram that
+documents the reasoning chain end to end.
+
+The implementation was developed in an interactive, AI-assisted workflow (Python and
+shell sessions). The analytical direction, the judgement calls on what to keep or
+discard, and the review of each output against the underlying data were mine; the
+code was scaffolded collaboratively.
+
+## Scope and limitations
 
 All findings are **correlational, not causal**. The strongest threat to the traffic
 analysis is that check-in behaviour is itself uneven across venue types, so part of
 the density effect may be measurement, not real footfall. The profit model's
 monetary parameters are external assumptions, not estimates — that is stated
-explicitly wherever its output appears.
+explicitly wherever its output appears. The dataset's geographic coverage is
+concentrated in a few states, so no result here should be read as a national average.
 
 ## Data
 

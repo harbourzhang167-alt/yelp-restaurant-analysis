@@ -1,0 +1,10 @@
+# Normalise line endings so Windows checkouts do not emit CRLF warnings.
+* text=auto eol=lf
+
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.docx binary
+
+*.png  -diff
+*.jpg  -diff
