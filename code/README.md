@@ -19,7 +19,7 @@ will raise `ModuleNotFoundError` in this environment.
 
 | File | What it does |
 |---|---|
-| `01_profile.py` | Profiles all 17 tables, audits data quality, documents six traps |
+| `01_profile.py` | Profiles all 17 tables, audits data quality, documents seven traps |
 | `02_features.py` | Builds the per-business feature table (~125 columns) |
 | `03_findings.py` | Survival analysis: univariate contrasts, logistic model, AUC, risk deciles |
 | `03b_density.py` | Haversine neighbour counts on real coordinates |
@@ -27,6 +27,11 @@ will raise `ModuleNotFoundError` in this environment.
 | `12_traffic_charts.py` | Traffic figures |
 | `13_profit_scenarios.py` | Cumulative-profit scenario model and break-even scan |
 | `15_sensitivity.py` | Joint sweep over the unobservable parameters |
+| `16_sensitivity_charts.py` | Sensitivity surface and break-even figures |
+| `18_hazard.py` | Builds the person-period table; also checks the grain of the source tables |
+| `19_hazard_model.py` | Discrete-time hazard fit with cluster bootstrap (the event is the review series stopping) |
+| `21_hazard_curves.py` | Survival curves per covariate, refitting the point model only |
+| `20_hazard_charts.py` | Hazard figures 30–32 |
 | `10_method_chain.py` | Renders the methodology diagram |
 | `chartkit.py` / `mapkit.py` / `flowkit.py` | Plotting primitives (Pillow) |
 | `tiles.py` / `streetcache.py` | OpenStreetMap tile stitching and Overpass caching |
@@ -36,4 +41,8 @@ will raise `ModuleNotFoundError` in this environment.
 The scripts expect BigQuery-exported CSVs under `data/bigquery/`, which are not
 published. They are included for transparency, not as a one-command reproduction.
 Statistical sections (`03_findings.py`, `03b_density.py`, `11_traffic.py`,
-`13_profit_scenarios.py`, `15_sensitivity.py`) read only from the feature table.
+`13_profit_scenarios.py`, `15_sensitivity.py`, `18_hazard.py`, `19_hazard_model.py`)
+read only from the feature table and the quarterly trajectory table.
+
+`19_hazard_model.py` takes roughly 15 minutes by default (120 cluster-bootstrap
+replicates over about 986,000 person-period rows); set `NBOOT=20` for a quick check.
