@@ -26,7 +26,7 @@ I ran the same dataset three times with three different dependent variables:
 | 2 | Check-ins per active month | What actually brings customers through the door? |
 | 3 | Modelled cumulative profit | Is a long life worth more than a busy one? |
 
-## Three findings
+## Four findings
 
 **1. Reviews drive traffic; delivery drives survival — and the two barely overlap.**
 
@@ -126,7 +126,7 @@ BigQuery export → data audit → feature engineering → survival model
                 → profit scenario + joint sensitivity → figures → report
 ```
 
-The 29 figures and the full write-up are in this repository. Statistical work:
+The 37 figures and the full write-up are in this repository. Statistical work:
 
 | Step | Method |
 |---|---|
